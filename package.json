@@ -1,0 +1,20 @@
+{
+  "name": "electron-audio-server",
+  "version": "1.0.1",
+  "description": "Provides a way to play audio via HTTP",
+  "main": "./index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "andrew rapo <andrew@wwlib.org> (http://wwlib.github.io)",
+  "license": "(c) Andrew Rapo",
+  "devDependencies": {},
+  "dependencies": {
+    "babel-core": "^6.3.15",
+    "body-parser": "^1.14.1",
+    "electron": "^2.0.9",
+    "express": "^4.13.3",
+    "multer": "^1.1.0"
+  }
+}

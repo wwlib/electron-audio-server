@@ -1,0 +1,31 @@
+<html>
+<style>
+    body {
+        color: #FFFFFF;
+        font-family: Monospace;
+        font-size: 18px;
+        text-align: center;
+        font-weight: bold;
+
+        background-color: #000000;
+        margin: 0px;
+        overflow: hidden;
+    }
+
+    #upload-form {
+        padding-top: 300px;
+        text-align: center;
+    }
+</style>
+<body>
+
+<div id="upload-form">
+    <p>Upload Audio Files Here(wav, mp3, m4a, ...)</p>
+    <form method="post" enctype="multipart/form-data" action="POST_URL"> <!-- NOTE: post url is replaced automatically -->
+        <input type="file" name="audio" accept="audio/*">
+        <input type="submit">
+    </form>
+</div>
+
+</body>
+</html>
