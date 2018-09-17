@@ -13,13 +13,13 @@ var app = express();
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.raw({ type: 'audio/wav', limit: '50mb' }));
 
-//app.use(bodyParser());
-
 var port = 3000;
-var host = 'localhost'; //''localhost'; //'capri-sensor-sage-challis.local';
+var host = 'localhost';
 
 var post_url;
 var html;
+var colorsOn = true;
+var urlOn = false;
 
 post_url = 'http://' + host + ':' + port;
 
@@ -27,28 +27,26 @@ try {
     html = fs.readFileSync('web/index.html');
     html = html.toString();
     html = html.replace(/POST_URL/, post_url);
-    //console.log(html);
 } catch (e) {
-    //console.log(html);
     html = '<html><body><code>' + e + '</code></body></html>';
 }
 
-var post_url_div = document.getElementById('post-url');
-var filename_div = document.getElementById('filename');
+var post_url_div;
+var filename_div;
 
-post_url_div.innerHTML = post_url;
+if (urlOn) {
+    post_url_div = document.getElementById('post-url');
+    filename_div = document.getElementById('filename');
+    post_url_div.innerHTML = post_url;
+}
 
 console.log('host, port: ', host, post_url);
 
 app.get('/', function(req, res){
     console.log('GET /');
-    //var html = '<html><body><form method="post" action="http://localhost:3000">Name: <input type="text" name="name" /><input type="submit" value="Submit" /></form></body>';
-    //html = fs.readFileSync('web/index.html');
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end(html);
 });
-
-//// curl -X POST --data-binary @"HiCynthia.wav" -H "Content-Type: audio/wav" capri-sensor-sage-challis.local:3000/
 
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var buf;
@@ -64,7 +62,9 @@ setupCanvas();
 app.post('/', upload.single('audio'), function (req, res, next) {
     console.log("RECEIVED AUDIO: ", req.body, req.file);
     if (req.file) {
-        filename_div.innerHTML = req.file.originalname;
+        if (urlOn) {
+            filename_div.innerHTML = req.file.originalname;
+        }
 
         fs.writeFile('web/audio_file', req.file.buffer, function (err) {
             if (err) {
@@ -203,6 +203,20 @@ function update() {
 
     var data = new Uint8Array(samples);
     fft.getByteFrequencyData(data);
+
+    var colors = [
+        '#00b6f0',
+        '#3BEF71',
+        '#F48422',
+        '#F24FCF',
+        '#FFEA32',
+        '#00b6f0',
+        '#3BEF71',
+        '#F48422',
+        '#F24FCF',
+        '#FFEA32'
+    ];
+
     gfx.fillStyle = '#00b6f0';
 
     var length = data.length / 2;
@@ -220,6 +234,11 @@ function update() {
 
         max_data_value = Math.max(max_data_value, value);
 
+        if (colorsOn) {
+            var div = data.length / colors.length;
+            var colorIndex = Math.floor(i / div);
+            gfx.fillStyle = colors[colorIndex];
+        }
         gfx.fillRect(left1, top, bar_width-1, height);
         gfx.fillRect(left2, top, bar_width-1, height);
         canvas_is_cleared = false;
